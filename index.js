@@ -109,6 +109,26 @@ async function run() {
             res.send(result)
         });
 
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body
+            // console.log('put', req.decodedEmail)
+            const filter = { email: user.email }
+            const updateDoc = { $set: { role: 'admin' } }
+            const result = await usersCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { email: email }
+            const user = await usersCollection.findOne(query)
+            let isAdmin = false
+            if (user?.role === 'admin') {
+                isAdmin = true
+            }
+            res.send({ admin: isAdmin })
+        })
+
 
 
     } finally {
